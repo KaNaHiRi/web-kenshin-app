@@ -41,6 +41,32 @@ model Examinee {
   @@map("examinees")
 }
 
+// ログイン試行ログ（ブルートフォース対策）
+model LoginAttempt {
+  id          Int      @id @default(autoincrement())
+  ipAddress   String   @map("ip_address") @db.VarChar(45)
+  username    String   @db.VarChar(50)
+  success     Boolean
+  attemptedAt DateTime @default(now()) @map("attempted_at")
+
+  @@index([ipAddress, attemptedAt])
+  @@map("login_attempts")
+}
+
+// アクセスログ
+model AccessLog {
+  id         Int      @id @default(autoincrement())
+  username   String?  @db.VarChar(50)
+  ipAddress  String   @map("ip_address") @db.VarChar(45)
+  method     String   @db.VarChar(10)
+  path       String   @db.VarChar(500)
+  accessedAt DateTime @default(now()) @map("accessed_at")
+
+  @@index([username, accessedAt])
+  @@index([accessedAt])
+  @@map("access_logs")
+}
+
 // スタッフ（管理者）
 model Staff {
   id             Int      @id @default(autoincrement())

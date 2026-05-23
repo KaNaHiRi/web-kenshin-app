@@ -4,7 +4,16 @@ export const metadata = {
   title: "スタッフログイン | 特定健診WEB問診",
 }
 
-export default function LoginPage() {
+const REASON_MESSAGES: Record<string, string> = {
+  timeout: "セッションがタイムアウトしました。再度ログインしてください。",
+}
+
+export default async function LoginPage(props: {
+  searchParams: Promise<{ reason?: string }>
+}) {
+  const { reason } = await props.searchParams
+  const message = reason ? REASON_MESSAGES[reason] : undefined
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
@@ -28,6 +37,13 @@ export default function LoginPage() {
           <h1 className="text-xl font-bold text-gray-900">スタッフログイン</h1>
           <p className="text-sm text-gray-500 mt-1">特定健診WEB問診 管理画面</p>
         </div>
+
+        {/* タイムアウト等のメッセージ */}
+        {message && (
+          <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-700">
+            {message}
+          </div>
+        )}
 
         {/* ログインカード */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 px-8 py-8">
