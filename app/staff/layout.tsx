@@ -44,6 +44,12 @@ export default async function StaffLayout({
               >
                 セキュリティ
               </Link>
+              <Link
+                href="/staff/admin"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                スタッフ管理
+              </Link>
             </nav>
 
             {/* ユーザー情報 */}
