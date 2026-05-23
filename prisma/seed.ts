@@ -2,6 +2,7 @@
 // 特定健診問診票 標準項目（厚労省準拠）
 
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -42,6 +43,19 @@ async function main() {
   }
 
   console.log("✅ 問診項目マスタ 22件 登録完了");
+
+  // スタッフ初期アカウント
+  const hashedPassword = await bcrypt.hash("admin1234", 10);
+  await prisma.staff.upsert({
+    where: { username: "admin" },
+    update: {},
+    create: {
+      username: "admin",
+      hashedPassword,
+      displayName: "管理者",
+    },
+  });
+  console.log("✅ スタッフアカウント作成完了 (admin / admin1234)");
 }
 
 main()

@@ -41,6 +41,17 @@ model Examinee {
   @@map("examinees")
 }
 
+// スタッフ（管理者）
+model Staff {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique @db.VarChar(50)
+  hashedPassword String   @map("hashed_password") @db.VarChar(255)
+  displayName    String   @map("display_name") @db.VarChar(100)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("staff")
+}
+
 // 問診回答
 model QuestionnaireAnswer {
   id           Int      @id @default(autoincrement())
