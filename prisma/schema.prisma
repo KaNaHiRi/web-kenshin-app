@@ -1,0 +1,57 @@
+// web-kenshin-app
+// DB: PostgreSQL (Neon)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 問診項目マスタ
+model QuestionMaster {
+  id           Int    @id @default(autoincrement())
+  questionCode String @unique @map("question_code") @db.VarChar(20)
+  questionName String @map("question_name") @db.VarChar(200)
+  category     String @db.VarChar(50)
+  displayOrder Int    @map("display_order")
+  isActive     Int    @default(1) @map("is_active") @db.SmallInt
+
+  answers QuestionnaireAnswer[]
+
+  @@map("question_masters")
+}
+
+// 受診者
+model Examinee {
+  id              Int       @id @default(autoincrement())
+  uniqueKey       String    @unique @map("unique_key") @db.VarChar(50)
+  externalId      String?   @map("external_id") @db.VarChar(50)  // 従業員番号・住民番号等
+  name            String    @db.VarChar(100)
+  birthDate       DateTime  @map("birth_date") @db.Date
+  gender          String    @db.VarChar(10)
+  examinationDate DateTime? @map("examination_date") @db.Date
+  fiscalYear      Int       @map("fiscal_year")
+  importedAt      DateTime  @default(now()) @map("imported_at")
+
+  answers QuestionnaireAnswer[]
+
+  @@map("examinees")
+}
+
+// 問診回答
+model QuestionnaireAnswer {
+  id           Int      @id @default(autoincrement())
+  uniqueKey    String   @map("unique_key") @db.VarChar(50)
+  questionCode String   @map("question_code") @db.VarChar(20)
+  answer       String   @db.VarChar(50)
+  answeredAt   DateTime @default(now()) @map("answered_at")
+
+  examinee Examinee       @relation(fields: [uniqueKey], references: [uniqueKey])
+  question QuestionMaster @relation(fields: [questionCode], references: [questionCode])
+
+  @@unique([uniqueKey, questionCode]) // 1人1項目1回答
+  @@map("questionnaire_answers")
+}
