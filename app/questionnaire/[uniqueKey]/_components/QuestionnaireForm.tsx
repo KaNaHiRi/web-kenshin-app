@@ -25,10 +25,21 @@ type Props = {
   existingAnswers: Record<string, string>
 }
 
-const CATEGORIES = ['既往歴', '服薬', '生活習慣'] as const
-
 function formatDate(date: Date): string {
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+}
+
+/** questions の displayOrder から順序を保ったまま重複なしでカテゴリ一覧を返す */
+function deriveCategories(questions: Question[]): string[] {
+  const seen = new Set<string>()
+  const result: string[] = []
+  for (const q of questions) {
+    if (!seen.has(q.category)) {
+      seen.add(q.category)
+      result.push(q.category)
+    }
+  }
+  return result
 }
 
 export default function QuestionnaireForm({ examinee, questions, existingAnswers }: Props) {
@@ -36,6 +47,9 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
   const [submitted, setSubmitted] = useState(Object.keys(existingAnswers).length > 0)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  // カテゴリを DB から動的に導出（追加カテゴリにも対応）
+  const CATEGORIES = deriveCategories(questions)
 
   const grouped = CATEGORIES.reduce<Record<string, Question[]>>((acc, cat) => {
     acc[cat] = questions.filter((q) => q.category === cat)
