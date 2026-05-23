@@ -32,6 +32,12 @@ export default async function StaffLayout({
               >
                 CSVインポート
               </Link>
+              <Link
+                href="/staff/qr"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                QR印刷
+              </Link>
             </nav>
 
             {/* ユーザー情報 */}

@@ -75,6 +75,17 @@ export default async function AnswersPage(props: {
           {allYears.length > 0 && (
             <YearFilter years={allYears} currentYear={currentYear} />
           )}
+          <Link
+            href={`/staff/qr?year=${currentYear}`}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+              />
+            </svg>
+            QR一括印刷
+          </Link>
           <a
             href={`/api/export/csv?year=${currentYear}`}
             className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
@@ -88,7 +99,7 @@ export default async function AnswersPage(props: {
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {['UniqueKey', '氏名', '性別', '生年月日', '受診予定日', '回答状況', '回答日時', ''].map((h) => (
+              {['UniqueKey', '氏名', '性別', '生年月日', '受診予定日', '回答状況', '回答日時', '', ''].map((h) => (
                 <th
                   key={h}
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"
@@ -131,6 +142,20 @@ export default async function AnswersPage(props: {
                         className="text-blue-600 hover:text-blue-800 text-xs font-medium hover:underline whitespace-nowrap"
                       >
                         詳細 →
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/staff/qr/${e.uniqueKey}`}
+                        className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs font-medium hover:underline whitespace-nowrap"
+                        title="QRコード印刷"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                          />
+                        </svg>
+                        QR
                       </Link>
                     </td>
                   </tr>
