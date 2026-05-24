@@ -1,6 +1,19 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import QuestionnaireForm from './_components/QuestionnaireForm'
+
+// ─── Loading fallback ────────────────────────────────────────────────────────
+
+function LoadingState() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-sm text-gray-400">読み込み中...</div>
+    </div>
+  )
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default async function QuestionnairePage(props: {
   params: Promise<{ uniqueKey: string }>
@@ -22,18 +35,21 @@ export default async function QuestionnairePage(props: {
     existingAnswers.map((a) => [a.questionCode, a.answer]),
   )
 
+  // QuestionnaireForm は内部で useSearchParams() を使うため Suspense でラップする
   return (
-    <QuestionnaireForm
-      examinee={{
-        uniqueKey: examinee.uniqueKey,
-        name: examinee.name,
-        birthDate: examinee.birthDate,
-        gender: examinee.gender,
-        examinationDate: examinee.examinationDate,
-        fiscalYear: examinee.fiscalYear,
-      }}
-      questions={questions}
-      existingAnswers={answersMap}
-    />
+    <Suspense fallback={<LoadingState />}>
+      <QuestionnaireForm
+        examinee={{
+          uniqueKey: examinee.uniqueKey,
+          name: examinee.name,
+          birthDate: examinee.birthDate,
+          gender: examinee.gender,
+          examinationDate: examinee.examinationDate,
+          fiscalYear: examinee.fiscalYear,
+        }}
+        questions={questions}
+        existingAnswers={answersMap}
+      />
+    </Suspense>
   )
 }

@@ -2,6 +2,10 @@
 
 import { useState, useTransition } from 'react'
 import { saveAnswers } from '../actions'
+import { useLocale } from '@/hooks/useLocale'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 type Question = {
   questionCode: string
@@ -25,9 +29,7 @@ type Props = {
   existingAnswers: Record<string, string>
 }
 
-function formatDate(date: Date): string {
-  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
-}
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /** questions の displayOrder から順序を保ったまま重複なしでカテゴリ一覧を返す */
 function deriveCategories(questions: Question[]): string[] {
@@ -42,22 +44,28 @@ function deriveCategories(questions: Question[]): string[] {
   return result
 }
 
+// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function QuestionnaireForm({ examinee, questions, existingAnswers }: Props) {
+  // ── i18n ──────────────────────────────────────────────────────────────────
+  const { t, lang, formatDate } = useLocale()
+
+  // ── State ─────────────────────────────────────────────────────────────────
   const [answers, setAnswers] = useState<Record<string, string>>(existingAnswers)
   const [submitted, setSubmitted] = useState(Object.keys(existingAnswers).length > 0)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  // カテゴリを DB から動的に導出（追加カテゴリにも対応）
+  // ── Derived ───────────────────────────────────────────────────────────────
   const CATEGORIES = deriveCategories(questions)
-
   const grouped = CATEGORIES.reduce<Record<string, Question[]>>((acc, cat) => {
     acc[cat] = questions.filter((q) => q.category === cat)
     return acc
   }, {})
-
   const allAnswered = questions.every((q) => answers[q.questionCode] !== undefined)
+  const remaining = questions.length - Object.keys(answers).length
 
+  // ── Handlers ──────────────────────────────────────────────────────────────
   function handleChange(questionCode: string, value: string) {
     setAnswers((prev) => ({ ...prev, [questionCode]: value }))
     setSubmitted(false)
@@ -72,54 +80,66 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
         setSubmitted(true)
         setError(null)
       } else {
-        setError(result.error ?? '保存に失敗しました')
+        setError(result.error ?? t.errorFallback)
       }
     })
   }
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
 
-        {/* ヘッダー */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">特定健康診査 問診票</h1>
-          <p className="text-sm text-gray-500 mt-1">{examinee.fiscalYear}年度</p>
+        {/* ── ヘッダー + 言語切替 ──────────────────────── */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{t.pageTitle}</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {t.fiscalYear.replace('{year}', String(examinee.fiscalYear))}
+            </p>
+          </div>
+          <LanguageSwitcher uniqueKey={examinee.uniqueKey} currentLang={lang} />
         </div>
 
-        {/* 受診者情報 */}
+        {/* ── 受診者情報 ────────────────────────────────── */}
         <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">受診者情報</h2>
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            {t.examineeInfo}
+          </h2>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
             <div>
-              <dt className="text-gray-500">氏名</dt>
+              <dt className="text-gray-500">{t.name}</dt>
               <dd className="font-medium text-gray-900">{examinee.name}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">性別</dt>
+              <dt className="text-gray-500">{t.gender}</dt>
               <dd className="font-medium text-gray-900">{examinee.gender}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">生年月日</dt>
+              <dt className="text-gray-500">{t.birthDate}</dt>
               <dd className="font-medium text-gray-900">{formatDate(examinee.birthDate)}</dd>
             </div>
             {examinee.examinationDate && (
               <div>
-                <dt className="text-gray-500">受診予定日</dt>
-                <dd className="font-medium text-gray-900">{formatDate(examinee.examinationDate)}</dd>
+                <dt className="text-gray-500">{t.examinationDate}</dt>
+                <dd className="font-medium text-gray-900">
+                  {formatDate(examinee.examinationDate)}
+                </dd>
               </div>
             )}
           </dl>
         </div>
 
-        {/* 問診項目 */}
+        {/* ── 問診項目（カテゴリごと）────────────────────── */}
         {CATEGORIES.map((category) => {
           const qs = grouped[category]
           if (!qs || qs.length === 0) return null
+          // DBの日本語カテゴリ名を各言語名に変換（対応キーがなければ原文のまま）
+          const categoryLabel = t.categories[category] ?? category
           return (
             <div key={category} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <div className="bg-gray-100 px-5 py-3 border-b border-gray-200">
-                <h2 className="text-sm font-semibold text-gray-700">{category}</h2>
+                <h2 className="text-sm font-semibold text-gray-700">{categoryLabel}</h2>
               </div>
               <div className="divide-y divide-gray-100">
                 {qs.map((q) => (
@@ -127,8 +147,8 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
                     <p className="text-sm text-gray-800 mb-3 leading-relaxed">{q.questionName}</p>
                     <div className="flex gap-6">
                       {[
-                        { value: '1', label: 'はい' },
-                        { value: '2', label: 'いいえ' },
+                        { value: '1', label: t.yes },
+                        { value: '2', label: t.no },
                       ].map(({ value, label }) => {
                         const id = `${q.questionCode}-${value}`
                         const checked = answers[q.questionCode] === value
@@ -170,39 +190,37 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
           )
         })}
 
-        {/* エラー */}
+        {/* ── エラー ───────────────────────────────────── */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
             {error}
           </div>
         )}
 
-        {/* 完了メッセージ */}
+        {/* ── 完了メッセージ ────────────────────────────── */}
         {submitted && !error && (
           <div className="bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 text-sm font-medium">
-            問診票の回答を保存しました。ありがとうございました。
+            {t.submitSuccess}
           </div>
         )}
 
-        {/* 未回答注意 */}
+        {/* ── 未回答の注意 ──────────────────────────────── */}
         {!allAnswered && (
           <p className="text-xs text-amber-600 text-center">
-            すべての質問に回答してから送信してください（残り {questions.length - Object.keys(answers).length} 問）
+            {t.incompleteWarning.replace('{remaining}', String(remaining))}
           </p>
         )}
 
-        {/* 送信ボタン */}
+        {/* ── 送信ボタン ────────────────────────────────── */}
         <button
           onClick={handleSubmit}
           disabled={!allAnswered || isPending}
           className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
         >
-          {isPending ? '保存中...' : '回答を送信する'}
+          {isPending ? t.saving : t.submit}
         </button>
 
-        <p className="text-xs text-gray-400 text-center pb-4">
-          送信後も回答を修正して再送信できます
-        </p>
+        <p className="text-xs text-gray-400 text-center pb-4">{t.editNote}</p>
       </div>
     </div>
   )

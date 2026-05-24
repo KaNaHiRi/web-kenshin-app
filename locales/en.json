@@ -1,0 +1,22 @@
+{
+  "pageTitle": "Specific Health Checkup Questionnaire",
+  "fiscalYear": "FY{year}",
+  "examineeInfo": "Patient Information",
+  "name": "Name",
+  "gender": "Gender",
+  "birthDate": "Date of Birth",
+  "examinationDate": "Examination Date",
+  "yes": "Yes",
+  "no": "No",
+  "errorFallback": "Failed to save your answers. Please try again.",
+  "submitSuccess": "Your answers have been saved. Thank you.",
+  "incompleteWarning": "Please answer all questions before submitting ({remaining} remaining).",
+  "submit": "Submit Answers",
+  "saving": "Saving...",
+  "editNote": "You can modify and resubmit your answers after submission.",
+  "categories": {
+    "既往歴": "Medical History",
+    "服薬": "Current Medications",
+    "生活習慣": "Lifestyle Habits"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "pageTitle": "特定健康診査 問診票",
+  "fiscalYear": "{year}年度",
+  "examineeInfo": "受診者情報",
+  "name": "氏名",
+  "gender": "性別",
+  "birthDate": "生年月日",
+  "examinationDate": "受診予定日",
+  "yes": "はい",
+  "no": "いいえ",
+  "errorFallback": "保存に失敗しました",
+  "submitSuccess": "問診票の回答を保存しました。ありがとうございました。",
+  "incompleteWarning": "すべての質問に回答してから送信してください（残り {remaining} 問）",
+  "submit": "回答を送信する",
+  "saving": "保存中...",
+  "editNote": "送信後も回答を修正して再送信できます",
+  "categories": {
+    "既往歴": "既往歴",
+    "服薬": "服薬",
+    "生活習慣": "生活習慣"
+  }
+}

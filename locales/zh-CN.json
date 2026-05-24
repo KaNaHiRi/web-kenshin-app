@@ -1,0 +1,22 @@
+{
+  "pageTitle": "特定健康检查 问诊表",
+  "fiscalYear": "{year}年度",
+  "examineeInfo": "受检者信息",
+  "name": "姓名",
+  "gender": "性别",
+  "birthDate": "出生日期",
+  "examinationDate": "检查预定日",
+  "yes": "是",
+  "no": "否",
+  "errorFallback": "保存失败，请重试。",
+  "submitSuccess": "您的问卷已保存。感谢您的配合。",
+  "incompleteWarning": "请回答所有问题后再提交（剩余 {remaining} 题）。",
+  "submit": "提交答案",
+  "saving": "保存中...",
+  "editNote": "提交后仍可修改并重新提交。",
+  "categories": {
+    "既往歴": "既往病史",
+    "服薬": "服药情况",
+    "生活習慣": "生活习惯"
+  }
+}
