@@ -39,6 +39,12 @@ export default async function StaffLayout({
                 QR印刷
               </Link>
               <Link
+                href="/staff/analytics"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                集計
+              </Link>
+              <Link
                 href="/staff/security"
                 className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
