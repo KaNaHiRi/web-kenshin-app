@@ -7,8 +7,11 @@ import QuestionnaireForm from './_components/QuestionnaireForm'
 
 function LoadingState() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-sm text-gray-400">読み込み中...</div>
+    <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-sm text-[var(--color-text-muted)]">読み込み中...</p>
+      </div>
     </div>
   )
 }

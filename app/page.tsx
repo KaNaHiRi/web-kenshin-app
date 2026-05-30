@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { ClipboardList, Shield, Clock, ChevronRight } from "lucide-react"
 
 export const metadata = {
   title: "特定健診WEB問診システム",
@@ -7,54 +8,67 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="text-center">
-        {/* アイコン */}
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-6">
-          <svg
-            className="w-8 h-8 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          </svg>
+    <div className="min-h-screen flex flex-col bg-[var(--color-bg)]">
+
+      {/* ── Hero ── */}
+      <section className="px-4 py-16 md:py-24 text-white text-center [background:linear-gradient(to_bottom,var(--color-primary),var(--color-accent))]">
+        <div className="max-w-2xl mx-auto">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-8">
+            <ClipboardList className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
+            特定健診WEB問診システム
+          </h1>
+          <p className="text-white/80 text-lg">
+            特定健康診査のWEB問診を、安心・簡単・スピーディに
+          </p>
         </div>
+      </section>
 
-        {/* タイトル */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          特定健診WEB問診システム
-        </h1>
-        <p className="text-gray-500 mb-10">
-          特定健康診査のWEB問診システムです
-        </p>
+      {/* ── Feature Cards ── */}
+      <section className="max-w-4xl mx-auto w-full px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            icon: Shield,
+            title: "安心",
+            desc: "セキュアな通信でプライバシーをしっかり保護します",
+          },
+          {
+            icon: ClipboardList,
+            title: "簡単",
+            desc: "直感的なUIで迷わず操作できます",
+          },
+          {
+            icon: Clock,
+            title: "スピーディ",
+            desc: "来院前に回答しておけば、当日の手続きがスムーズ",
+          },
+        ].map(({ icon: Icon, title, desc }) => (
+          <div key={title} className="bg-white rounded-xl shadow-md p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg)] mb-4">
+              <Icon className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-bold text-lg mb-2 text-[var(--color-text)]">{title}</h3>
+            <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">{desc}</p>
+          </div>
+        ))}
+      </section>
 
-        {/* ボタン */}
+      {/* ── CTA ── */}
+      <div className="text-center pb-16">
         <Link
           href="/staff/login"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-primary text-primary px-8 py-3 font-semibold hover:bg-primary hover:text-white transition-colors focus:outline-none focus:ring-4 focus:ring-primary/30"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-            />
-          </svg>
           スタッフログイン
+          <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* ── Footer ── */}
+      <footer className="mt-auto border-t border-gray-200 py-6 text-center text-sm text-[var(--color-text-muted)]">
+        〇〇クリニック &nbsp;特定健診WEB問診システム
+      </footer>
     </div>
   )
 }
