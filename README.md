@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 特定健診WEB問診システム
 
-## Getting Started
+特定健康診査（メタボ健診）の問診票をデジタル化し、受診者がスマートフォン・タブレットから事前回答できるWEBアプリケーションです。クリニックスタッフは管理画面で受診者の登録・回答状況の確認・集計分析をワンストップで行えます。
 
-First, run the development server:
+**デモ：** https://web-kenshin-app.vercel.app
+
+---
+
+## 想定ユーザー
+
+| ユーザー | 利用シーン |
+|---|---|
+| 受診者 | 来院前にスマホ・タブレットでQRコードを読み取り、問診票に回答 |
+| クリニックスタッフ | 受診者の登録・管理、回答状況の確認、集計レポートの閲覧 |
+
+---
+
+## 主な機能
+
+### 受診者向け
+- QRコードからワンクリックでアクセス（ログイン不要）
+- ウィザード形式（1問ずつ表示）＋進捗バー表示
+- 4言語対応（日本語・英語・中国語簡体字・繁体字）
+- 回答の保存・再編集に対応
+
+### スタッフ向け（管理画面）
+- 受診者一括登録（CSVインポート）
+- 回答状況の一覧確認（未回答 / 一部回答 / 回答済みバッジ）
+- 回答内容の詳細閲覧・CSV出力
+- 集計グラフ（回答率・カテゴリ別・項目別）
+- QRコードの一括印刷（A4印刷レイアウト対応）
+- 問診項目の追加・編集・並び順変更・有効無効切り替え
+- スタッフアカウント管理（追加・削除・パスワード変更）
+- セキュリティログ（ブルートフォース対策・セッションタイムアウト）
+
+---
+
+## 技術スタック
+
+| カテゴリ | 技術 |
+|---|---|
+| フロントエンド | Next.js 16 (App Router) / TypeScript / Tailwind CSS v4 |
+| バックエンド | Next.js Server Actions / NextAuth.js v5 |
+| データベース | PostgreSQL (Neon) / Prisma ORM |
+| UIコンポーネント | lucide-react / recharts |
+| デプロイ | Vercel |
+
+---
+
+## デザインコンセプト
+
+ヘルスケア分野のSaaSデザイントレンドを取り入れ、「清潔感・信頼感・使いやすさ」を目指したプロフェッショナルUIを設計しました。
+
+- **カラーパレット：** ディープブルー (`#0F4C8A`) をベースに、アクセントカラーにティール (`#00B4D8`) を採用
+- **色覚多様性対応：** 赤/緑の組み合わせを排除し、エラーはオレンジ・成功は青系で区別
+- **レスポンシブ：** モバイル・タブレットでの操作を優先したレイアウト
+- **フォント：** Noto Sans JP + Inter（Google Fonts）
+
+---
+
+## デモ
+
+| 項目 | 情報 |
+|---|---|
+| URL | https://web-kenshin-app.vercel.app |
+| スタッフログイン | ユーザー名: `admin` / パスワード: `admin123` |
+
+受診者の問診画面は管理画面でQRコードを発行するか、回答一覧の「詳細」から直接アクセスできます。
+
+---
+
+## ローカル起動手順
 
 ```bash
+# 1. リポジトリをクローン
+git clone https://github.com/KaNaHiRi/web-kenshin-app.git
+cd web-kenshin-app
+
+# 2. 依存パッケージをインストール
+npm install
+
+# 3. 環境変数を設定（.env.localを作成）
+cp .env.example .env.local
+# DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL を編集
+
+# 4. DBマイグレーション & シードデータ投入
+npx prisma migrate deploy
+npx prisma db seed
+
+# 5. 開発サーバー起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+http://localhost:3000 をブラウザで開いてください。
