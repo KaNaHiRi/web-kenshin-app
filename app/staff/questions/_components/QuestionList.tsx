@@ -148,7 +148,8 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
               <span className="text-xs text-[var(--color-text-muted)]">{items.length} 項目</span>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            {/* ── PC：テーブル表示 ─────────────────────── */}
+            <div className="hidden md:block bg-white rounded-xl shadow-md overflow-hidden">
               <table className="min-w-full text-sm">
                 <thead className="bg-primary/5 border-b border-primary/10">
                   <tr>
@@ -270,7 +271,6 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                             </div>
                           ) : (
                             <div className="flex items-center justify-end gap-1.5">
-                              {/* 編集 */}
                               <button
                                 onClick={() => openEdit(q)}
                                 disabled={isPending}
@@ -278,8 +278,6 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                               >
                                 編集
                               </button>
-
-                              {/* 有効/無効切り替え */}
                               <button
                                 onClick={() => handleToggle(q.id)}
                                 disabled={isPending}
@@ -291,8 +289,6 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                               >
                                 {q.isActive === 1 ? "無効化" : "有効化"}
                               </button>
-
-                              {/* 削除 */}
                               <button
                                 onClick={() => handleDelete(q)}
                                 disabled={isPending || answerCount > 0}
@@ -313,6 +309,141 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                   })}
                 </tbody>
               </table>
+            </div>
+
+            {/* ── スマホ：カード表示 ───────────────────── */}
+            <div className="md:hidden space-y-3">
+              {items.map((q, idx) => {
+                const answerCount = answerCountMap[q.questionCode] ?? 0
+                const isFirst = idx === 0
+                const isLast = idx === items.length - 1
+                const isConfirming = confirmDeleteId === q.id
+
+                return (
+                  <div
+                    key={q.id}
+                    className={`bg-white rounded-xl shadow-sm border border-gray-100 p-4 transition-opacity ${
+                      q.isActive === 0 ? "opacity-60" : ""
+                    }`}
+                  >
+                    {/* 上部：バッジ群 ＋ 並び替えボタン */}
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {/* カテゴリバッジ */}
+                        <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                          {category}
+                        </span>
+                        {/* 状態バッジ */}
+                        <span
+                          className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                            q.isActive === 1
+                              ? "bg-primary/10 text-primary"
+                              : "bg-gray-100 text-[var(--color-text-muted)]"
+                          }`}
+                        >
+                          {q.isActive === 1 ? "有効" : "無効"}
+                        </span>
+                      </div>
+                      {/* 並び替えボタン */}
+                      <div className="flex flex-col gap-0.5 shrink-0">
+                        <button
+                          onClick={() => handleMove(q.id, "up")}
+                          disabled={isFirst || isPending}
+                          className="p-1 text-[var(--color-text-muted)] hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                          title="上に移動"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleMove(q.id, "down")}
+                          disabled={isLast || isPending}
+                          className="p-1 text-[var(--color-text-muted)] hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                          title="下に移動"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 質問コード */}
+                    <p className="font-mono text-xs text-[var(--color-text-muted)] mb-1">
+                      {q.questionCode}
+                    </p>
+
+                    {/* 質問文 */}
+                    <p className="text-base text-[var(--color-text)] leading-relaxed mb-3">
+                      {q.questionName}
+                    </p>
+
+                    {/* 回答数 */}
+                    <p className="text-xs text-[var(--color-text-muted)] mb-3">
+                      回答:{" "}
+                      {answerCount > 0 ? (
+                        <span className="font-medium text-[var(--color-text)]">{answerCount}件</span>
+                      ) : (
+                        "なし"
+                      )}
+                    </p>
+
+                    {/* 操作エリア */}
+                    {isConfirming ? (
+                      <div>
+                        <p className="text-xs text-[var(--color-text-muted)] mb-2 text-center">
+                          削除しますか？
+                        </p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleDelete(q)}
+                            disabled={isPending}
+                            className="flex-1 py-2 text-xs font-semibold text-white bg-warning hover:bg-[#d97706] disabled:opacity-50 rounded-lg transition-colors"
+                          >
+                            削除する
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="flex-1 py-2 text-xs font-medium text-[var(--color-text-muted)] bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                          >
+                            取消
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => openEdit(q)}
+                          disabled={isPending}
+                          className="flex-1 py-2 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 disabled:opacity-50 rounded-lg transition-colors"
+                        >
+                          編集
+                        </button>
+                        <button
+                          onClick={() => handleToggle(q.id)}
+                          disabled={isPending}
+                          className={`flex-1 py-2 text-xs font-medium disabled:opacity-50 rounded-lg transition-colors ${
+                            q.isActive === 1
+                              ? "text-amber-700 bg-amber-50 hover:bg-amber-100"
+                              : "text-success bg-blue-50 hover:bg-blue-100"
+                          }`}
+                        >
+                          {q.isActive === 1 ? "無効化" : "有効化"}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(q)}
+                          disabled={isPending || answerCount > 0}
+                          title={
+                            answerCount > 0
+                              ? `回答データ（${answerCount}件）があるため削除できません`
+                              : "削除"
+                          }
+                          className="flex-1 py-2 text-xs font-medium text-warning bg-orange-50 hover:bg-orange-100 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg transition-colors"
+                        >
+                          削除
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </section>
         ))}
