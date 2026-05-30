@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import QrCard from "./_components/QrCard"
 import PrintButton from "./_components/PrintButton"
 import YearFilter from "../answers/_components/YearFilter"
+import { ArrowLeft, QrCode } from "lucide-react"
 
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://web-kenshin-app.vercel.app"
@@ -45,36 +46,38 @@ export default async function QrBulkPage(props: {
         }
       `}</style>
 
-      <div className="min-h-screen bg-gray-50 print:bg-white">
+      <div className="min-h-screen bg-[var(--color-bg)] print:bg-white">
         {/* 操作バー（印刷時は非表示） */}
-        <div className="print:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+        <div className="print:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white shadow-sm">
           <div className="flex items-center gap-4">
             <Link
               href="/staff/answers"
-              className="text-sm text-blue-600 hover:underline"
+              className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-primary transition-colors"
             >
-              ← 一覧に戻る
+              <ArrowLeft className="w-4 h-4" />
+              一覧に戻る
             </Link>
             {allYears.length > 0 && (
               <YearFilter years={allYears} currentYear={currentYear} />
             )}
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500">{examinees.length}件</span>
+            <span className="text-sm text-[var(--color-text-muted)]">{examinees.length}件</span>
             <PrintButton label={`${examinees.length}件を印刷`} />
           </div>
         </div>
 
         {/* 印刷ヘッダー */}
         <div className="hidden print:block text-center pt-4 pb-2 mb-2 border-b border-gray-200">
-          <p className="text-sm font-bold text-gray-800">
+          <p className="text-sm font-bold text-[var(--color-text)]">
             {currentYear}年度　特定健診WEB問診　QRコード一覧（{examinees.length}件）
           </p>
         </div>
 
         {/* コンテンツ */}
         {examinees.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400 print:hidden">
+          <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--color-text-muted)] print:hidden">
+            <QrCode className="w-10 h-10 opacity-40" />
             <p>{currentYear}年度の受診者データがありません</p>
           </div>
         ) : (

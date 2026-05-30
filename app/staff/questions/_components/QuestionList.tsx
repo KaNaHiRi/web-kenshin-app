@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { Plus, ChevronUp, ChevronDown, CheckCircle2, Info } from "lucide-react"
 import { toggleActive, deleteQuestion, moveOrder } from "../actions"
 import QuestionModal from "./QuestionModal"
 
@@ -26,7 +27,6 @@ function groupByCategory(questions: Question[]): [string, Question[]][] {
     if (!map.has(q.category)) map.set(q.category, [])
     map.get(q.category)!.push(q)
   }
-  // カテゴリの順序 = そのカテゴリ内で最小の displayOrder
   const entries = [...map.entries()].sort((a, b) => {
     const minA = Math.min(...a[1].map((q) => q.displayOrder))
     const minB = Math.min(...b[1].map((q) => q.displayOrder))
@@ -56,7 +56,7 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
   }
 
   function openAdd() {
-    setModalTarget(null) // null = 追加モード
+    setModalTarget(null)
     setShowModal(true)
   }
 
@@ -102,13 +102,13 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
       {/* トースト */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 rounded-xl px-5 py-3 shadow-lg text-sm font-medium max-w-sm ${
+          className={`fixed top-4 right-4 z-50 rounded-xl px-5 py-3 shadow-lg text-sm font-medium max-w-sm flex items-center gap-2 ${
             toast.type === "success"
-              ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
+              ? "bg-success text-white"
+              : "bg-warning text-white"
           }`}
         >
-          {toast.type === "success" ? "✓ " : "✕ "}
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           {toast.message}
         </div>
       )}
@@ -116,8 +116,8 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
       {/* ヘッダー */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">問診項目管理</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-primary">問診項目管理</h1>
+          <p className="text-sm text-[var(--color-text-muted)] mt-1">
             全 {questions.length} 項目（有効 {totalActive} 項目 ·{" "}
             {existingCategories.length} カテゴリ）
           </p>
@@ -125,15 +125,9 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
         <button
           onClick={openAdd}
           disabled={isPending}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-[#0a3d73] disabled:opacity-50 transition-colors shadow-sm focus:outline-none focus:ring-3 focus:ring-primary/30"
         >
-          <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fillRule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Plus className="w-4 h-4" />
           項目を追加
         </button>
       </div>
@@ -141,7 +135,7 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
       {/* カテゴリ別グループ */}
       <div className="space-y-6">
         {grouped.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 px-6 py-12 text-center text-gray-400">
+          <div className="bg-white rounded-xl shadow-md px-6 py-12 text-center text-[var(--color-text-muted)]">
             問診項目がありません。「項目を追加」から登録してください。
           </div>
         )}
@@ -150,30 +144,30 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
           <section key={category}>
             {/* カテゴリヘッダー */}
             <div className="flex items-center gap-3 mb-2">
-              <h2 className="text-sm font-semibold text-gray-700">{category}</h2>
-              <span className="text-xs text-gray-400">{items.length} 項目</span>
+              <h2 className="text-sm font-semibold text-[var(--color-text)]">{category}</h2>
+              <span className="text-xs text-[var(--color-text-muted)]">{items.length} 項目</span>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <table className="min-w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-primary/5 border-b border-primary/10">
                   <tr>
-                    <th className="w-8 px-3 py-2.5 text-left text-xs font-medium text-gray-400">
+                    <th className="w-8 px-3 py-2.5 text-left text-xs font-semibold text-primary">
                       順
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold text-primary uppercase tracking-wider">
                       コード
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold text-primary uppercase tracking-wider">
                       質問名
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold text-primary uppercase tracking-wider">
                       回答数
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold text-primary uppercase tracking-wider">
                       状態
                     </th>
-                    <th className="px-4 py-2.5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-right text-xs font-semibold text-primary uppercase tracking-wider">
                       操作
                     </th>
                   </tr>
@@ -191,7 +185,7 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                         className={`transition-colors ${
                           q.isActive === 0
                             ? "bg-gray-50 opacity-60"
-                            : "hover:bg-gray-50"
+                            : "hover:bg-primary/5"
                         }`}
                       >
                         {/* 並び順ボタン */}
@@ -200,57 +194,37 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                             <button
                               onClick={() => handleMove(q.id, "up")}
                               disabled={isFirst || isPending}
-                              className="p-0.5 text-gray-400 hover:text-gray-700 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              className="p-0.5 text-[var(--color-text-muted)] hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                               title="上に移動"
                             >
-                              <svg
-                                className="w-3.5 h-3.5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                              <ChevronUp className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleMove(q.id, "down")}
                               disabled={isLast || isPending}
-                              className="p-0.5 text-gray-400 hover:text-gray-700 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              className="p-0.5 text-[var(--color-text-muted)] hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                               title="下に移動"
                             >
-                              <svg
-                                className="w-3.5 h-3.5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                              <ChevronDown className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </td>
 
                         {/* コード */}
-                        <td className="px-4 py-3 font-mono text-xs text-gray-400 whitespace-nowrap">
+                        <td className="px-4 py-3 font-mono text-xs text-[var(--color-text-muted)] whitespace-nowrap">
                           {q.questionCode}
                         </td>
 
                         {/* 質問名 */}
-                        <td className="px-4 py-3 text-gray-800 leading-snug">
+                        <td className="px-4 py-3 text-[var(--color-text)] leading-snug">
                           {q.questionName}
                         </td>
 
                         {/* 回答数 */}
-                        <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                        <td className="px-4 py-3 text-[var(--color-text-muted)] text-xs whitespace-nowrap">
                           {answerCount > 0 ? (
                             <span className="inline-flex items-center gap-1">
-                              <span className="text-gray-700 font-medium">
+                              <span className="text-[var(--color-text)] font-medium">
                                 {answerCount}
                               </span>
                               件
@@ -265,8 +239,8 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                               q.isActive === 1
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-500"
+                                ? "bg-primary/10 text-primary"
+                                : "bg-gray-100 text-[var(--color-text-muted)]"
                             }`}
                           >
                             {q.isActive === 1 ? "有効" : "無効"}
@@ -277,19 +251,19 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                         <td className="px-4 py-3">
                           {isConfirming ? (
                             <div className="flex items-center justify-end gap-1.5">
-                              <span className="text-xs text-gray-600">
+                              <span className="text-xs text-[var(--color-text-muted)]">
                                 削除しますか？
                               </span>
                               <button
                                 onClick={() => handleDelete(q)}
                                 disabled={isPending}
-                                className="px-2.5 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors"
+                                className="px-2.5 py-1 text-xs font-semibold text-white bg-warning hover:bg-[#d97706] disabled:opacity-50 rounded-lg transition-colors"
                               >
                                 削除
                               </button>
                               <button
                                 onClick={() => setConfirmDeleteId(null)}
-                                className="px-2.5 py-1 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                className="px-2.5 py-1 text-xs font-medium text-[var(--color-text-muted)] bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                               >
                                 取消
                               </button>
@@ -300,7 +274,7 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                               <button
                                 onClick={() => openEdit(q)}
                                 disabled={isPending}
-                                className="px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 disabled:opacity-50 rounded-lg transition-colors"
+                                className="px-2.5 py-1 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 disabled:opacity-50 rounded-lg transition-colors"
                               >
                                 編集
                               </button>
@@ -312,13 +286,13 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                                 className={`px-2.5 py-1 text-xs font-medium disabled:opacity-50 rounded-lg transition-colors ${
                                   q.isActive === 1
                                     ? "text-amber-700 bg-amber-50 hover:bg-amber-100"
-                                    : "text-green-700 bg-green-50 hover:bg-green-100"
+                                    : "text-success bg-blue-50 hover:bg-blue-100"
                                 }`}
                               >
                                 {q.isActive === 1 ? "無効化" : "有効化"}
                               </button>
 
-                              {/* 削除（回答データがない場合のみ有効） */}
+                              {/* 削除 */}
                               <button
                                 onClick={() => handleDelete(q)}
                                 disabled={isPending || answerCount > 0}
@@ -327,7 +301,7 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
                                     ? `回答データ（${answerCount}件）があるため削除できません`
                                     : "削除"
                                 }
-                                className="px-2.5 py-1 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg transition-colors"
+                                className="px-2.5 py-1 text-xs font-medium text-warning bg-orange-50 hover:bg-orange-100 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg transition-colors"
                               >
                                 削除
                               </button>
@@ -345,20 +319,23 @@ export default function QuestionList({ questions, answerCountMap }: Props) {
       </div>
 
       {/* 凡例 */}
-      <div className="mt-6 rounded-xl bg-blue-50 border border-blue-100 px-5 py-4 text-xs text-blue-700 space-y-1">
-        <p className="font-semibold">📋 操作について</p>
-        <ul className="list-disc list-inside space-y-0.5 text-blue-600">
+      <div className="mt-6 rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 text-xs text-primary space-y-1">
+        <p className="font-semibold flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5" />
+          操作について
+        </p>
+        <ul className="list-disc list-inside space-y-0.5 text-[var(--color-text-muted)]">
           <li>
-            <strong>有効/無効</strong>：無効にすると問診フォームに表示されなくなります（回答データは保持）
+            <strong className="text-[var(--color-text)]">有効/無効</strong>：無効にすると問診フォームに表示されなくなります（回答データは保持）
           </li>
           <li>
-            <strong>削除</strong>：回答データが存在しない項目のみ完全削除できます
+            <strong className="text-[var(--color-text)]">削除</strong>：回答データが存在しない項目のみ完全削除できます
           </li>
           <li>
-            <strong>↑↓ ボタン</strong>：同カテゴリ内での表示順を変更します
+            <strong className="text-[var(--color-text)]">↑↓ ボタン</strong>：同カテゴリ内での表示順を変更します
           </li>
           <li>
-            <strong>新規カテゴリ</strong>：カテゴリ欄に未登録のカテゴリ名を入力すると新たなカテゴリが作成されます
+            <strong className="text-[var(--color-text)]">新規カテゴリ</strong>：カテゴリ欄に未登録のカテゴリ名を入力すると新たなカテゴリが作成されます
           </li>
         </ul>
       </div>

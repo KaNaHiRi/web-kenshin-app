@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from 'react'
 import Papa from 'papaparse'
+import { Upload, CheckCircle2, AlertCircle, RotateCcw } from 'lucide-react'
 import { importExaminees, type ExamineeRow, type ImportResult } from '../actions'
 
 const PREVIEW_COLUMNS: (keyof ExamineeRow)[] = [
@@ -58,8 +59,9 @@ export default function ImportClient() {
 
   return (
     <div className="space-y-6">
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      {/* ファイル選択ゾーン */}
+      <div className="border-2 border-dashed border-primary/30 rounded-xl p-6 bg-white hover:border-primary/50 transition-colors">
+        <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
           CSVファイルを選択
         </label>
         <input
@@ -67,48 +69,54 @@ export default function ImportClient() {
           type="file"
           accept=".csv"
           onChange={handleFileChange}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+          className="block w-full text-sm text-[var(--color-text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
         />
         {fileName && (
-          <p className="mt-2 text-sm text-gray-600">選択済み: {fileName}</p>
+          <p className="mt-2 text-sm text-[var(--color-text-muted)] flex items-center gap-1.5">
+            <Upload className="w-3.5 h-3.5" />
+            選択済み: {fileName}
+          </p>
         )}
       </div>
 
+      {/* パースエラー */}
       {parseError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
-          CSVの解析に失敗しました: {parseError}
+        <div className="flex items-start gap-3 bg-orange-50 border border-orange-200 text-warning rounded-xl p-4 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <span>CSVの解析に失敗しました: {parseError}</span>
         </div>
       )}
 
+      {/* プレビューテーブル */}
       {rows.length > 0 && (
         <div>
-          <h2 className="text-base font-semibold text-gray-800 mb-2">
+          <h2 className="text-base font-semibold text-[var(--color-text)] mb-2">
             プレビュー（{rows.length} 件）
           </h2>
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="min-w-full text-sm divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="overflow-x-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <table className="min-w-full text-sm">
+              <thead className="bg-primary/5 border-b border-primary/10">
                 <tr>
                   {PREVIEW_COLUMNS.map((col) => (
                     <th
                       key={col}
-                      className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"
+                      className="px-3 py-2.5 text-left text-xs font-semibold text-primary uppercase tracking-wider whitespace-nowrap"
                     >
                       {col}
                       {REQUIRED_COLUMNS.has(col as string) && (
-                        <span className="text-red-500 ml-0.5">*</span>
+                        <span className="text-warning ml-0.5">*</span>
                       )}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100">
                 {rows.slice(0, 10).map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
+                  <tr key={i} className="hover:bg-primary/5 transition-colors">
                     {PREVIEW_COLUMNS.map((col) => (
                       <td
                         key={col}
-                        className="px-3 py-2 whitespace-nowrap text-gray-700"
+                        className="px-3 py-2.5 whitespace-nowrap text-[var(--color-text)]"
                       >
                         {row[col] ?? ''}
                       </td>
@@ -119,54 +127,62 @@ export default function ImportClient() {
             </table>
           </div>
           {rows.length > 10 && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--color-text-muted)] mt-1.5">
               ※ 先頭 10 件を表示（全 {rows.length} 件）
             </p>
           )}
         </div>
       )}
 
+      {/* 実行ボタン */}
       {rows.length > 0 && !result && (
         <div className="flex gap-3">
           <button
             onClick={handleImport}
             disabled={isPending}
-            className="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-[#0a3d73] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-3 focus:ring-primary/30"
           >
             {isPending ? 'インポート中...' : 'インポート実行'}
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 border border-gray-200 text-[var(--color-text-muted)] text-sm font-medium rounded-xl hover:text-primary hover:border-primary/40 transition-colors"
           >
+            <RotateCcw className="w-3.5 h-3.5" />
             リセット
           </button>
         </div>
       )}
 
+      {/* 結果 */}
       {result && (
         <div className="space-y-3">
-          <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4">
-            <p className="font-medium">
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 text-success rounded-xl p-4">
+            <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <p className="font-medium text-sm">
               インポート完了: {result.count} 件を登録しました
             </p>
           </div>
           {result.errors.length > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-4 text-sm">
-              <p className="font-medium mb-1">
-                スキップされた行（{result.errors.length} 件）:
-              </p>
-              <ul className="list-disc list-inside space-y-1">
-                {result.errors.map((err, i) => (
-                  <li key={i}>{err}</li>
-                ))}
-              </ul>
+            <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4 text-sm">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium mb-1">
+                  スキップされた行（{result.errors.length} 件）:
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-amber-700">
+                  {result.errors.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
           <button
             onClick={handleReset}
-            className="px-6 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 border border-gray-200 text-[var(--color-text-muted)] text-sm font-medium rounded-xl hover:text-primary hover:border-primary/40 transition-colors"
           >
+            <RotateCcw className="w-3.5 h-3.5" />
             別のファイルをインポート
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { ClipboardList, AlertCircle } from "lucide-react"
 import LoginForm from "./_components/LoginForm"
 
 export const metadata = {
@@ -15,38 +16,30 @@ export default async function LoginPage(props: {
   const message = reason ? REASON_MESSAGES[reason] : undefined
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "linear-gradient(to bottom, var(--color-primary), var(--color-accent))" }}
+    >
       <div className="w-full max-w-sm">
         {/* ロゴ／タイトル */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 mb-4">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 mb-4">
+            <ClipboardList className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900">スタッフログイン</h1>
-          <p className="text-sm text-gray-500 mt-1">特定健診WEB問診 管理画面</p>
+          <h1 className="text-xl font-bold text-white">スタッフログイン</h1>
+          <p className="text-sm text-white/70 mt-1">特定健診WEB問診 管理画面</p>
         </div>
 
         {/* タイムアウト等のメッセージ */}
         {message && (
-          <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-700">
-            {message}
+          <div className="mb-4 flex items-start gap-2 rounded-xl bg-orange-50 border border-orange-200 px-4 py-3 text-sm text-warning">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <span>{message}</span>
           </div>
         )}
 
         {/* ログインカード */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 px-8 py-8">
+        <div className="bg-white rounded-2xl shadow-xl px-8 py-8">
           <LoginForm />
         </div>
       </div>

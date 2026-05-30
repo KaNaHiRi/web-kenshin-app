@@ -25,26 +25,19 @@ export default async function AnalyticsPage(props: {
   // ── 並列データ取得 ────────────────────────────────────
   const [totalExaminees, answeredExaminees, questions, rawAnswerStats] =
     await Promise.all([
-      // 年度の受診者総数
       prisma.examinee.count({
         where: { fiscalYear: currentYear },
       }),
-
-      // 1件以上回答した受診者数
       prisma.examinee.count({
         where: {
           fiscalYear: currentYear,
           answers: { some: {} },
         },
       }),
-
-      // 有効な問診項目（表示順）
       prisma.questionMaster.findMany({
         where: { isActive: 1 },
         orderBy: { displayOrder: 'asc' },
       }),
-
-      // 年度内の回答を questionCode × answer 値で集計
       prisma.questionnaireAnswer.groupBy({
         by: ['questionCode', 'answer'],
         where: {
@@ -80,7 +73,6 @@ export default async function AnalyticsPage(props: {
   })
 
   // ── カテゴリ別集計 ────────────────────────────────────
-  // 既往歴 → 服薬 → 生活習慣 の順を保持
   const categoryOrder = ['既往歴', '服薬', '生活習慣']
   const categoriesInData = [
     ...new Set(questions.map((q) => q.category)),
@@ -120,8 +112,8 @@ export default async function AnalyticsPage(props: {
       {/* ── ページヘッダー ──────────────────────────── */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">回答集計</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-primary">回答集計</h1>
+          <p className="text-sm text-[var(--color-text-muted)] mt-1">
             {currentYear}年度&nbsp;·&nbsp;有効問診項目 {questions.length}件
           </p>
         </div>

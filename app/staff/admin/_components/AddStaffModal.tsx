@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState, useEffect, useRef } from "react"
+import { X, AlertCircle } from "lucide-react"
 import { addStaff } from "../actions"
 
 type Props = {
@@ -22,44 +23,41 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
     }
   }, [state?.success, onClose, onSuccess])
 
+  const inputClass =
+    "w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-3 focus:ring-primary/20 focus:border-primary transition-colors"
+
   return (
-    /* backdrop */
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
-        {/* header */}
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">スタッフ追加</h2>
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+        {/* ヘッダー */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="text-base font-semibold text-[var(--color-text)]">スタッフ追加</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-[var(--color-text-muted)] hover:text-primary transition-colors rounded-lg p-1"
             aria-label="閉じる"
           >
-            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form ref={formRef} action={formAction} className="space-y-4">
+        <form ref={formRef} action={formAction} className="px-6 py-5 space-y-4">
           {/* エラー表示 */}
           {state?.error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-              {state.error}
+            <div className="flex items-start gap-2 rounded-xl bg-orange-50 border border-orange-200 px-4 py-3 text-sm text-warning">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span>{state.error}</span>
             </div>
           )}
 
           {/* ユーザー名 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">
               ユーザー名
-              <span className="ml-1 text-xs text-gray-400">（ログインID）</span>
+              <span className="ml-1 text-xs text-[var(--color-text-muted)]">（ログインID）</span>
             </label>
             <input
               type="text"
@@ -67,16 +65,16 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
               required
               autoComplete="off"
               placeholder="例: staff01"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-[var(--color-text-muted)] mt-1">
               半角英数字・アンダースコア、3〜20文字
             </p>
           </div>
 
           {/* 表示名 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">
               表示名
             </label>
             <input
@@ -84,13 +82,13 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
               name="displayName"
               required
               placeholder="例: 山田 太郎"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
             />
           </div>
 
           {/* パスワード */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">
               パスワード
             </label>
             <input
@@ -99,13 +97,13 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
               required
               autoComplete="new-password"
               placeholder="8文字以上"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
             />
           </div>
 
           {/* パスワード確認 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">
               パスワード確認
             </label>
             <input
@@ -114,7 +112,7 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
               required
               autoComplete="new-password"
               placeholder="もう一度入力"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
             />
           </div>
 
@@ -123,14 +121,14 @@ export default function AddStaffModal({ onClose, onSuccess }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[var(--color-text-muted)] bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
             >
               キャンセル
             </button>
             <button
               type="submit"
               disabled={pending}
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+              className="px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-[#0a3d73] disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors focus:outline-none focus:ring-3 focus:ring-primary/30"
             >
               {pending ? "追加中…" : "追加する"}
             </button>

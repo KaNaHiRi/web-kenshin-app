@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Plus, KeyRound, Trash2, CheckCircle2 } from "lucide-react"
 import { deleteStaff } from "../actions"
 import ChangePasswordModal from "./ChangePasswordModal"
 import AddStaffModal from "./AddStaffModal"
@@ -62,13 +63,13 @@ export default function StaffTable({
       {/* トースト通知 */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 rounded-xl px-5 py-3 shadow-lg text-sm font-medium transition-all ${
+          className={`fixed top-4 right-4 z-50 rounded-xl px-5 py-3 shadow-lg text-sm font-medium transition-all flex items-center gap-2 ${
             toast.type === "success"
-              ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
+              ? "bg-success text-white"
+              : "bg-warning text-white"
           }`}
         >
-          {toast.type === "success" ? "✓ " : "✕ "}
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           {toast.message}
         </div>
       )}
@@ -76,33 +77,27 @@ export default function StaffTable({
       {/* ヘッダー */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">スタッフ管理</h1>
-          <p className="text-sm text-gray-500 mt-1">{totalCount}名登録中</p>
+          <h1 className="text-2xl font-bold text-primary">スタッフ管理</h1>
+          <p className="text-sm text-[var(--color-text-muted)] mt-1">{totalCount}名登録中</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-[#0a3d73] transition-colors shadow-sm focus:outline-none focus:ring-3 focus:ring-primary/30"
         >
-          <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fillRule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Plus className="w-4 h-4" />
           スタッフ追加
         </button>
       </div>
 
       {/* テーブル */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden">
         <table className="min-w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-primary/5 border-b border-primary/10">
             <tr>
               {["表示名", "ユーザー名", "登録日", ""].map((h) => (
                 <th
                   key={h}
-                  className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-5 py-3 text-left text-xs font-semibold text-primary uppercase tracking-wider"
                 >
                   {h}
                 </th>
@@ -112,7 +107,7 @@ export default function StaffTable({
           <tbody className="divide-y divide-gray-100">
             {staffList.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-5 py-10 text-center text-gray-400">
+                <td colSpan={4} className="px-5 py-10 text-center text-[var(--color-text-muted)]">
                   スタッフが登録されていません
                 </td>
               </tr>
@@ -123,24 +118,24 @@ export default function StaffTable({
                 const isConfirming = confirmDeleteId === staff.id
 
                 return (
-                  <tr key={staff.id} className="hover:bg-gray-50">
+                  <tr key={staff.id} className="hover:bg-primary/5 transition-colors">
                     {/* 表示名 */}
-                    <td className="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
+                    <td className="px-5 py-3.5 font-medium text-[var(--color-text)] whitespace-nowrap">
                       {staff.displayName}
                       {isSelf && (
-                        <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                        <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-lg text-xs font-medium bg-primary/10 text-primary">
                           自分
                         </span>
                       )}
                     </td>
 
                     {/* ユーザー名 */}
-                    <td className="px-5 py-3.5 font-mono text-xs text-gray-500">
+                    <td className="px-5 py-3.5 font-mono text-xs text-[var(--color-text-muted)]">
                       {staff.username}
                     </td>
 
                     {/* 登録日 */}
-                    <td className="px-5 py-3.5 text-gray-500 text-xs whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-[var(--color-text-muted)] text-xs whitespace-nowrap">
                       {fmt(staff.createdAt)}
                     </td>
 
@@ -152,19 +147,7 @@ export default function StaffTable({
                           onClick={() => setChangePwTarget(staff)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                         >
-                          <svg
-                            className="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-                            />
-                          </svg>
+                          <KeyRound className="w-3.5 h-3.5" />
                           パスワード変更
                         </button>
 
@@ -172,17 +155,17 @@ export default function StaffTable({
                         {!isSelf && (
                           isConfirming ? (
                             <div className="flex items-center gap-1.5">
-                              <span className="text-xs text-gray-600">本当に削除しますか？</span>
+                              <span className="text-xs text-[var(--color-text-muted)]">本当に削除しますか？</span>
                               <button
                                 onClick={() => handleDelete(staff)}
                                 disabled={isDeleting}
-                                className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors"
+                                className="px-3 py-1.5 text-xs font-semibold text-white bg-warning hover:bg-[#d97706] disabled:opacity-50 rounded-lg transition-colors"
                               >
                                 {isDeleting ? "削除中…" : "はい"}
                               </button>
                               <button
                                 onClick={() => setConfirmDeleteId(null)}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                className="px-3 py-1.5 text-xs font-medium text-[var(--color-text-muted)] bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                               >
                                 いいえ
                               </button>
@@ -191,21 +174,9 @@ export default function StaffTable({
                             <button
                               onClick={() => handleDelete(staff)}
                               disabled={isDeleting}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 disabled:opacity-50 rounded-lg transition-colors"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-warning bg-orange-50 hover:bg-orange-100 disabled:opacity-50 rounded-lg transition-colors"
                             >
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                />
-                              </svg>
+                              <Trash2 className="w-3.5 h-3.5" />
                               削除
                             </button>
                           )
