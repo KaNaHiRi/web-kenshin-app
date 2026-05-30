@@ -19,7 +19,6 @@ const notoSansJP = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "特定健診WEB問診システム",
   description: "特定健康診査のWEB問診システムです",
-  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({
