@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ClipboardList, Shield, Clock, ChevronRight } from "lucide-react"
 
@@ -14,7 +15,7 @@ export default function Home() {
       <section className="px-4 py-16 md:py-24 text-white text-center [background:linear-gradient(to_bottom,var(--color-primary),var(--color-accent))]">
         <div className="max-w-2xl mx-auto">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-8">
-            <ClipboardList className="w-8 h-8 text-white" />
+            <Image src="/logo.png" alt="KaNaHiRi" width={48} height={48} className="rounded-xl" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
             特定健診WEB問診システム

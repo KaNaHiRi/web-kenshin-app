@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { auth } from "@/auth"
 import StaffNavLinks from "./_components/StaffNavLinks"
 import LogoutButton from "./_components/LogoutButton"
@@ -17,9 +18,12 @@ export default async function StaffLayout({
           <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
             {/* システム名 + ナビ */}
             <div className="flex items-center gap-4 min-w-0">
-              <span className="text-sm font-bold text-primary whitespace-nowrap shrink-0">
-                特定健診WEB問診
-              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                <Image src="/logo.png" alt="KaNaHiRi" width={36} height={36} className="rounded-lg" />
+                <span className="text-sm font-bold text-primary whitespace-nowrap">
+                  特定健診WEB問診
+                </span>
+              </div>
               <StaffNavLinks />
             </div>
 
