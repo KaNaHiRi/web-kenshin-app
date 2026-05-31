@@ -94,6 +94,7 @@ export default async function AnswersPage(props: {
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead className="bg-primary/5 border-b border-primary/10">
             <tr>
@@ -158,6 +159,7 @@ export default async function AnswersPage(props: {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

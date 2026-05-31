@@ -17,7 +17,7 @@ export default function StaffNavLinks() {
   const pathname = usePathname()
 
   return (
-    <nav className="flex items-center gap-1 overflow-x-auto">
+    <nav className="flex items-center gap-1 overflow-x-auto min-w-0">
       {NAV_ITEMS.map(({ href, label }) => {
         const isActive = pathname.startsWith(href)
         return (
