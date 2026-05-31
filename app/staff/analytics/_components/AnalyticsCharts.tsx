@@ -89,7 +89,7 @@ type StatCardProps = {
 function StatCard({ label, value, unit, valueColor = 'text-[var(--color-text)]' }: StatCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-md p-5">
-      <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">{label}</p>
+      <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide whitespace-nowrap">{label}</p>
       <p className={`mt-1 text-3xl font-bold ${valueColor}`}>
         {value.toLocaleString()}
         <span className="text-base font-normal text-[var(--color-text-muted)] ml-1">{unit}</span>
@@ -134,7 +134,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
   return (
     <div className="space-y-5">
       {/* ── サマリーカード ─────────────────────────────── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <StatCard label="受診者総数" value={totalExaminees} unit="人" />
         <StatCard
           label="回答済み"
