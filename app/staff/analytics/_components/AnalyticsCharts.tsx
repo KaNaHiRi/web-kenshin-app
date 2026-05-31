@@ -158,13 +158,13 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
       ) : (
         <>
           {/* ── 回答率 + カテゴリ別 ──────────────────────── */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* ドーナッツチャート */}
             <div className="bg-white rounded-xl shadow-md p-3 md:p-5">
               <h2 className="text-sm font-semibold text-primary mb-1">回答率</h2>
               <div className="overflow-x-auto">
               <div className="relative">
-                <ResponsiveContainer width="100%" height={240}>
+                <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
                       data={pieData}
@@ -210,7 +210,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                 <p className="text-[var(--color-text-muted)] text-sm text-center py-16">データなし</p>
               ) : (
                 <div className="overflow-x-auto">
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={180}>
                   <BarChart
                     data={categoryStats}
                     margin={{ top: 4, right: 16, left: 0, bottom: 0 }}
