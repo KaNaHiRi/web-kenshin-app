@@ -160,8 +160,9 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
           {/* ── 回答率 + カテゴリ別 ──────────────────────── */}
           <div className="grid grid-cols-2 gap-4">
             {/* ドーナッツチャート */}
-            <div className="bg-white rounded-xl shadow-md p-5">
+            <div className="bg-white rounded-xl shadow-md p-3 md:p-5">
               <h2 className="text-sm font-semibold text-primary mb-1">回答率</h2>
+              <div className="overflow-x-auto">
               <div className="relative">
                 <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
@@ -197,16 +198,18 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                   <span className="text-xs text-[var(--color-text-muted)] mt-0.5">回答率</span>
                 </div>
               </div>
+              </div>
             </div>
 
             {/* カテゴリ別「はい」回答率 */}
-            <div className="bg-white rounded-xl shadow-md p-5">
+            <div className="bg-white rounded-xl shadow-md p-3 md:p-5">
               <h2 className="text-sm font-semibold text-primary mb-4">
                 カテゴリ別「はい」回答率
               </h2>
               {categoryStats.length === 0 ? (
                 <p className="text-[var(--color-text-muted)] text-sm text-center py-16">データなし</p>
               ) : (
+                <div className="overflow-x-auto">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
                     data={categoryStats}
@@ -231,7 +234,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                       formatter={(v) => [`${Number(v ?? 0)}%`, 'はい回答率']}
                       cursor={{ fill: '#F0F4F8' }}
                     />
-                    <Bar dataKey="yesRate" radius={[6, 6, 0, 0]} maxBarSize={64}>
+                    <Bar dataKey="yesRate" radius={[6, 6, 0, 0]} maxBarSize={40}>
                       {categoryStats.map((entry, i) => (
                         <Cell
                           key={i}
@@ -241,6 +244,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+                </div>
               )}
               {/* カテゴリ凡例 */}
               <div className="flex flex-wrap gap-3 mt-3">
@@ -268,7 +272,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
             const allNoData = catQuestions.every((q) => q.totalAnswered === 0)
 
             return (
-              <div key={cat} className="bg-white rounded-xl shadow-md p-5">
+              <div key={cat} className="bg-white rounded-xl shadow-md p-3 md:p-5">
                 <div className="flex items-center gap-2 mb-5">
                   <span
                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
@@ -287,6 +291,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                     このカテゴリの回答データがありません
                   </p>
                 ) : (
+                  <div className="overflow-x-auto">
                   <ResponsiveContainer width="100%" height={chartHeight}>
                     <BarChart
                       data={catQuestions}
@@ -333,6 +338,7 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
                       />
                     </BarChart>
                   </ResponsiveContainer>
+                  </div>
                 )}
               </div>
             )
