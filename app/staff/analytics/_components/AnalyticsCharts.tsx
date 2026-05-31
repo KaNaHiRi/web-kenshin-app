@@ -162,9 +162,9 @@ export default function AnalyticsCharts({ data }: { data: AnalyticsData }) {
             {/* ドーナッツチャート */}
             <div className="bg-white rounded-xl shadow-md p-3 md:p-5">
               <h2 className="text-sm font-semibold text-primary mb-1">回答率</h2>
-              <div className="overflow-x-auto">
+              <div className="overflow-visible">
               <div className="relative">
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
                     <Pie
                       data={pieData}
