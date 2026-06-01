@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { AlertCircle, CheckCircle2, ChevronLeft } from 'lucide-react'
 import { saveAnswers } from '../actions'
 import { useLocale } from '@/hooks/useLocale'
@@ -18,9 +18,9 @@ type Question = {
 
 type Examinee = {
   name: string
-  birthDate: Date
+  birthDate: string
   gender: string
-  examinationDate: Date | null
+  examinationDate: string | null
   fiscalYear: number
   uniqueKey: string
 }
@@ -49,7 +49,10 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
 
   // ── State ─────────────────────────────────────────────────────────────────
   const [answers, setAnswers] = useState<Record<string, string>>(existingAnswers)
-  const [submitted, setSubmitted] = useState(Object.keys(existingAnswers).length > 0)
+  const [submitted, setSubmitted] = useState(
+    questions.length > 0 &&
+    questions.every((q) => existingAnswers[q.questionCode] !== undefined),
+  )
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -60,6 +63,7 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
   })()
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
   const [isVisible, setIsVisible] = useState(true)
+  const isAnimating = useRef(false)
 
   // ── Derived ───────────────────────────────────────────────────────────────
   const allAnswered = questions.every((q) => answers[q.questionCode] !== undefined)
@@ -97,20 +101,24 @@ export default function QuestionnaireForm({ examinee, questions, existingAnswers
   }
 
   function goNext() {
-    if (isLast) return
+    if (isLast || isAnimating.current) return
+    isAnimating.current = true
     setIsVisible(false)
     setTimeout(() => {
       setCurrentIndex((i) => i + 1)
       setIsVisible(true)
+      isAnimating.current = false
     }, 150)
   }
 
   function goBack() {
-    if (isFirst) return
+    if (isFirst || isAnimating.current) return
+    isAnimating.current = true
     setIsVisible(false)
     setTimeout(() => {
       setCurrentIndex((i) => i - 1)
       setIsVisible(true)
+      isAnimating.current = false
     }, 150)
   }
 

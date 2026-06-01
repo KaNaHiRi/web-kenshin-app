@@ -45,9 +45,9 @@ export default async function QuestionnairePage(props: {
         examinee={{
           uniqueKey: examinee.uniqueKey,
           name: examinee.name,
-          birthDate: examinee.birthDate,
+          birthDate: examinee.birthDate.toISOString(),
           gender: examinee.gender,
-          examinationDate: examinee.examinationDate,
+          examinationDate: examinee.examinationDate?.toISOString() ?? null,
           fiscalYear: examinee.fiscalYear,
         }}
         questions={questions}
